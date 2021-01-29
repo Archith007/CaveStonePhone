@@ -1,3 +1,39 @@
+var p5Inst = new p5(null, 'sketch');
+
+window.preload = function () {
+  initMobileControls(p5Inst);
+
+  p5Inst._predefinedSpriteAnimations = {};
+  p5Inst._pauseSpriteAnimationsByDefault = false;
+  var animationListJSON = {"orderedKeys":["ac6ae9cc-1ff6-4501-a779-bb071251be3f","1aeca795-9c70-4157-b404-c8740e5e1f59","484aa7c5-5369-465e-98f8-2ad8eb041f8e","80f53cb4-8ac7-425b-8d18-274fc21f78d0","5ccf48e1-4346-4437-b4e6-04c50e5ee396","2d1af3b6-5ec8-490a-8909-bdb9ba0a2c87"],"propsByKey":{"ac6ae9cc-1ff6-4501-a779-bb071251be3f":{"name":"assets/ac6ae9cc-1ff6-4501-a779-bb071251be3f.png","sourceUrl":null,"frameSize":{"x":66,"y":118},"frameCount":3,"looping":true,"frameDelay":12,"version":"oCG6nlRiT7eLG3.XEY8zeyXJsTV70ZR9","categories":["characters"],"loadedFromSource":true,"saved":true,"sourceSize":{"x":132,"y":236},"rootRelativePath":"assets/ac6ae9cc-1ff6-4501-a779-bb071251be3f.png"},"1aeca795-9c70-4157-b404-c8740e5e1f59":{"name":"assets/1aeca795-9c70-4157-b404-c8740e5e1f59.png","sourceUrl":null,"frameSize":{"x":200,"y":73},"frameCount":3,"looping":true,"frameDelay":12,"version":"hfDVgZ6otUpliZq8nxo4bOzqoyRiZjQ6","categories":["characters"],"loadedFromSource":true,"saved":true,"sourceSize":{"x":200,"y":219},"rootRelativePath":"assets/1aeca795-9c70-4157-b404-c8740e5e1f59.png"},"484aa7c5-5369-465e-98f8-2ad8eb041f8e":{"name":"assets/484aa7c5-5369-465e-98f8-2ad8eb041f8e.png","sourceUrl":null,"frameSize":{"x":641,"y":480},"frameCount":6,"looping":true,"frameDelay":12,"version":"tUoWcSVhR4RZKh29NoH7FdwkORLGFtuf","loadedFromSource":true,"saved":true,"sourceSize":{"x":1282,"y":1440},"rootRelativePath":"assets/484aa7c5-5369-465e-98f8-2ad8eb041f8e.png"},"80f53cb4-8ac7-425b-8d18-274fc21f78d0":{"name":"assets/80f53cb4-8ac7-425b-8d18-274fc21f78d0.png","sourceUrl":null,"frameSize":{"x":900,"y":560},"frameCount":1,"looping":true,"frameDelay":12,"version":"3.y9j7aaXSFsxNBiHAH3aNJCzPUl973S","loadedFromSource":true,"saved":true,"sourceSize":{"x":900,"y":560},"rootRelativePath":"assets/80f53cb4-8ac7-425b-8d18-274fc21f78d0.png"},"5ccf48e1-4346-4437-b4e6-04c50e5ee396":{"name":"assets/5ccf48e1-4346-4437-b4e6-04c50e5ee396.png","sourceUrl":null,"frameSize":{"x":900,"y":560},"frameCount":1,"looping":true,"frameDelay":12,"version":"zuathp82_0upkC3ldq0CHntMEFRNih9M","loadedFromSource":true,"saved":true,"sourceSize":{"x":900,"y":560},"rootRelativePath":"assets/5ccf48e1-4346-4437-b4e6-04c50e5ee396.png"},"2d1af3b6-5ec8-490a-8909-bdb9ba0a2c87":{"name":"assets/2d1af3b6-5ec8-490a-8909-bdb9ba0a2c87.png","sourceUrl":null,"frameSize":{"x":96,"y":94},"frameCount":1,"looping":true,"frameDelay":12,"version":"dtSb.LhTP0k5EvAU5Z.phKcXwFVBj1TV","loadedFromSource":true,"saved":true,"sourceSize":{"x":96,"y":94},"rootRelativePath":"assets/2d1af3b6-5ec8-490a-8909-bdb9ba0a2c87.png"}}};
+  var orderedKeys = animationListJSON.orderedKeys;
+  var allAnimationsSingleFrame = false;
+  orderedKeys.forEach(function (key) {
+    var props = animationListJSON.propsByKey[key];
+    var frameCount = allAnimationsSingleFrame ? 1 : props.frameCount;
+    var image = loadImage(props.rootRelativePath, function () {
+      var spriteSheet = loadSpriteSheet(
+          image,
+          props.frameSize.x,
+          props.frameSize.y,
+          frameCount
+      );
+      p5Inst._predefinedSpriteAnimations[props.name] = loadAnimation(spriteSheet);
+      p5Inst._predefinedSpriteAnimations[props.name].looping = props.looping;
+      p5Inst._predefinedSpriteAnimations[props.name].frameDelay = props.frameDelay;
+    });
+  });
+
+  function wrappedExportedCode(stage) {
+    if (stage === 'preload') {
+      if (setup !== window.setup) {
+        window.setup = setup;
+      } else {
+        return;
+      }
+    }
+// -----
+    
 var gamestate = "standing";
 var a = 1;
 var b = 0;
@@ -540,3 +576,22 @@ drawSprites();
   
   
 }
+
+// -----
+    try { window.draw = draw; } catch (e) {}
+    switch (stage) {
+      case 'preload':
+        if (preload !== window.preload) { preload(); }
+        break;
+      case 'setup':
+        if (setup !== window.setup) { setup(); }
+        break;
+    }
+  }
+  window.wrappedExportedCode = wrappedExportedCode;
+  wrappedExportedCode('preload');
+};
+
+window.setup = function () {
+  window.wrappedExportedCode('setup');
+};
